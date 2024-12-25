@@ -14,7 +14,7 @@ import UserWorkout from "../pages/Userworkout";
 import UsersPage from "../pages/Allusers"
 import Setexcercise from "../pages/Setexcercise"
 import GymTrainerForm from "../pages/Traineradd";
-import UserWorkout2 from "../pages/Userworkout2";
+
 function App() {
   return (
     <>
