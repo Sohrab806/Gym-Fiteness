@@ -1,0 +1,6 @@
+# npm install express mongoose dotenv
+express as our beckend logic 
+mongoose to interect with our database mongodb 
+dotenv to interect with our environment variable
+# npm i nodemon -D
+#npm i ant
