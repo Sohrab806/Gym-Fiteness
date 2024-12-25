@@ -17,6 +17,7 @@ import ViewPage from "./ViewPage";
 import PlanedWorkout from "./PlanedWorkout";
 import UserWorkout from "./Userworkout";
 import UsersPage from "./Allusers";
+import ExerciseForm from "./Setexcercise";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -56,8 +57,8 @@ const Home = () => {
     if (usertype === "admin") {
       baseItems.unshift(
         getItem("Dashboard", "dashboard", <DesktopOutlined />, [
-          getItem("Users", "users"),
-          getItem("Preferences", "dashboard/preferences"),
+          getItem("Users", "users",<UserOutlined />),
+          getItem("AddExercise", "addexercise",),
         ])
       );
     }
@@ -175,6 +176,8 @@ const Home = () => {
             {activeItem === "workout" && <PlanedWorkout />}
             {activeItem === "userworkout" && <UserWorkout />}
             {activeItem === "users" && <UsersPage/>}
+            {activeItem === "addexercise" && <ExerciseForm/>}
+            
           </div>
         </Content>
         <Footer
@@ -209,6 +212,7 @@ const App = () => {
       <Route path="/workout" element={<PlanedWorkout />} />
       <Route path="/userworkout" element={<UserWorkout />} />
       <Route path="/users" element={<UsersPage/>} />
+      <Route path="/setexcercise" element={<ExerciseForm/>} />
     </Routes>
   );
 };

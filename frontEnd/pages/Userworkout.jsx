@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button, Spin, message } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined,InfoCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { List, Typography } from 'antd';
 
 const { Content } = Layout;
 
@@ -76,15 +77,16 @@ const UserWorkouts = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", padding: "24px", backgroundColor: "#f0f2f5" }}>
+    <Layout style={{ minHeight: "100vh", padding: "24px", backgroundColor: "#f0f2f5" ,width: "100%",maxWidth: "100%"}}>
       <Content
         style={{
-          maxWidth: "1200px",
+        
+          maxWidth: "5000px",
           margin: "0 auto",
           padding: "24px",
           background: "#fff",
           boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
-          borderRadius: "12px",
+          borderRadius: "22px",
         }}
       >
         <h2 style={{ textAlign: "center", fontSize: "30px", fontWeight: "700", color: "#333" }}>
@@ -116,7 +118,7 @@ const UserWorkouts = () => {
               <div
                 key={workout._id}
                 style={{
-                  width: "320px",
+                  width: "620px",
                   background: "#fff",
                   borderRadius: "15px",
                   overflow: "hidden",
@@ -135,19 +137,7 @@ const UserWorkouts = () => {
                     borderBottom: "1px solid #e5e7eb",
                   }}
                 >
-                  <h3
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: "bold",
-                      marginBottom: "12px",
-                      color: "#333",
-                    }}
-                  >
-                    {workout.name || "Untitled Workout"}
-                  </h3>
-                  <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
-                    {workout.description || "No description available."}
-                  </p>
+                 
                   {workout.categoryDetails.category && (
                     <div style={{ marginBottom: "20px" }}>
                       <h4 style={{ marginBottom: "8px", color: "#555" }}>
@@ -159,16 +149,27 @@ const UserWorkouts = () => {
                       <h5 style={{ color: "#444", fontSize: "16px", marginBottom: "8px" }}>
                         Exercises:
                       </h5>
-                      <ul>
-                        {workout.categoryDetails.exercise.map((exercise, index) => (
-                          <li key={index} style={{ marginBottom: "8px" }}>
-                            <strong>{exercise.name}</strong>
-                            <p style={{ color: "#6b7280", fontSize: "14px", margin: "0" }}>
-                              {exercise.description}
-                            </p>
-                          </li>
-                        ))}
-                      </ul>
+                      <List
+  header={<div>Exercises</div>}
+  footer={<div>End of Exercises</div>}
+  bordered
+  dataSource={workout.categoryDetails.exercise} // Assuming `exercise` is an array
+  renderItem={(exercise) => (
+    <List.Item>
+      <Typography.Text mark> <div style={{
+        
+          color:"white",
+          padding: "10px",
+          background: "#2E8B57",
+          boxShadow: "0 10px 15px rgba(0, 0, 0, 0.3)",
+          borderRadius: "12px",}}>{exercise.name} </div>  </Typography.Text>
+      <p style={{ color: "#6b7280", fontSize: "14px", margin: "12px 0 0px 30px",  }}>
+      <InfoCircleOutlined style={{ marginRight: '8px' }} />
+        { exercise.description}
+      </p>
+    </List.Item>
+  )}
+/>
                     </div>
                   )}
                 </div>
