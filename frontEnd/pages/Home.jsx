@@ -18,6 +18,7 @@ import PlanedWorkout from "./PlanedWorkout";
 import UserWorkout from "./Userworkout";
 import UsersPage from "./Allusers";
 import ExerciseForm from "./Setexcercise";
+import TrainerApplication from "./Trainerapplication";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -43,7 +44,7 @@ const Home = () => {
       getItem("Workouts", "workout", <PieChartOutlined />),
       getItem("Users", "sub1", <UserOutlined />, [
         getItem("workout", "userworkout"),
-        getItem("Bill", "users/bill"),
+        getItem("Apply", "trainerform"),
         getItem("Alex", "users/alex"),
       ]),
       getItem("Settings", "sub2", <SettingOutlined />, [
@@ -177,6 +178,7 @@ const Home = () => {
             {activeItem === "userworkout" && <UserWorkout />}
             {activeItem === "users" && <UsersPage/>}
             {activeItem === "addexercise" && <ExerciseForm/>}
+            {activeItem === "trainerform" && <TrainerApplication/>}
             
           </div>
         </Content>
@@ -213,6 +215,7 @@ const App = () => {
       <Route path="/userworkout" element={<UserWorkout />} />
       <Route path="/users" element={<UsersPage/>} />
       <Route path="/setexcercise" element={<ExerciseForm/>} />
+      <Route path="/trainerform" element={<TrainerApplication/>} />
     </Routes>
   );
 };

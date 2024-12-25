@@ -38,3 +38,4 @@ export const getCate = async (req, res) => {
   }
 };
 
+
