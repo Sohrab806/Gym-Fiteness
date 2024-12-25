@@ -19,6 +19,7 @@ import UserWorkout from "./Userworkout";
 import UsersPage from "./Allusers";
 import ExerciseForm from "./Setexcercise";
 import TrainerApplication from "./Trainerapplication";
+import TrainerApplications from "./Applications";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -60,6 +61,7 @@ const Home = () => {
         getItem("Dashboard", "dashboard", <DesktopOutlined />, [
           getItem("Users", "users",<UserOutlined />),
           getItem("AddExercise", "addexercise",),
+          getItem("Application", "apply",),
         ])
       );
     }
@@ -85,8 +87,11 @@ const Home = () => {
           if (response.data.success) {
             const email = response.data.user.email;
             const usertype = response.data.user.usertype;
+            const trainer = response.data.user.trainer;
+           
             localStorage.setItem("email", email); // Store email in localStorage
             localStorage.setItem("usertype", usertype); // Store user type in localStorage
+            localStorage.setItem("trainer", trainer); // Store user type in localStorage
             setMenuItems(initializeMenuItems(usertype)); // Dynamically set menu items
             message.success("Token verified successfully!");
           }
@@ -179,6 +184,7 @@ const Home = () => {
             {activeItem === "users" && <UsersPage/>}
             {activeItem === "addexercise" && <ExerciseForm/>}
             {activeItem === "trainerform" && <TrainerApplication/>}
+            {activeItem === "apply" && <TrainerApplications/>}
             
           </div>
         </Content>
@@ -216,6 +222,7 @@ const App = () => {
       <Route path="/users" element={<UsersPage/>} />
       <Route path="/setexcercise" element={<ExerciseForm/>} />
       <Route path="/trainerform" element={<TrainerApplication/>} />
+      <Route path="/apply" element={<TrainerApplications/>} />
     </Routes>
   );
 };

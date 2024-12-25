@@ -34,7 +34,7 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
-        <Route path="/applications" element={<TrainerApplications/>} />
+       
        
         
     
