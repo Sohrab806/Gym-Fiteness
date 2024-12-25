@@ -1,59 +1,74 @@
 import React, { useState, useEffect } from "react";
-import { Layout, Button, Spin, message, Popconfirm } from "antd";
+import { Layout, Button, Spin, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 
 const { Content } = Layout;
 
 const UserWorkouts = () => {
-  const [workouts, setWorkouts] = useState([]); // State to store workouts
-  const [loading, setLoading] = useState(true); // State to manage loading
-  const [error, setError] = useState(null); // State to handle errors
+  const [workouts, setWorkouts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const BASE_URL = "http://localhost:5000";
 
-  // Fetch workouts from the database
   useEffect(() => {
-    const fetchWorkouts = async () => {
+    const fetchWorkoutsAndCategories = async () => {
       try {
         setLoading(true);
-        const email = localStorage.getItem("email"); // Get email from localStorage
-        
-        if (!email) {
-          throw new Error("User not authenticated. Please log in again.");
-        }
+        const email = localStorage.getItem("email");
+        if (!email) throw new Error("User not authenticated. Please log in again.");
 
-        const response = await axios.get(
-          `http://localhost:5000/api/workout/userworkout`,{
-            params: { userEmail: email }, 
-          }
-        );
-        const { success, data } = response.data;
-    
+        const workoutResponse = await axios.get(`${BASE_URL}/api/workout/userworkout`, {
+          params: { userEmail: email },
+        });
+        console.log('Workout Response:', workoutResponse.data);
 
-        if (success && Array.isArray(data)) {
-          setWorkouts(data);
-        } else {
-          throw new Error("Failed to fetch workouts. Invalid response.");
-        }
-      } catch (error) {
-        console.error("Error fetching workouts:", error);
-        setError("Failed to fetch workouts. Please try again later.");
+        const { success: workoutSuccess, data: workoutsData } = workoutResponse.data;
+        if (!workoutSuccess) throw new Error("Failed to fetch workouts.");
+
+        const workoutNames = workoutsData.map((workout) => workout.name);
+        console.log('Workout Names:', workoutNames);
+
+        const categoryResponse = await axios.post(`${BASE_URL}/api/categories/match`, {
+          userEmail: email,
+          workouts: workoutNames,
+        });
+        console.log('Category Response:', categoryResponse.data);
+
+        const { success: categorySuccess, data: categoriesData } = categoryResponse.data;
+        if (!categorySuccess) throw new Error("Failed to fetch categories.");
+
+        const matchedWorkouts = workoutsData.map((workout) => {
+          const matchedCategory = categoriesData.find(
+            (category) => category.category.toLowerCase() === workout.name.toLowerCase()
+          );
+          console.log('Matching workout:', workout.name, 'with category:', matchedCategory?.category);
+          const combined = {
+            ...workout,
+            categoryDetails: matchedCategory || {},
+          };
+          console.log('Combined workout data:', combined);
+          return combined;
+        });
+
+        console.log('Final matched workouts:', matchedWorkouts);
+        setWorkouts(matchedWorkouts);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to fetch data. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchWorkouts();
+    fetchWorkoutsAndCategories();
   }, []);
 
-  // Delete a workout
   const handleDelete = async (id) => {
     try {
-        
-      await axios.delete(`http://localhost:5000/api/workout/${id}`);
+      await axios.delete(`${BASE_URL}/api/workout/${id}`);
       message.success("Workout deleted successfully.");
-      setWorkouts((prevWorkouts) =>
-        prevWorkouts.filter((workout) => workout._id !== id)
-      );
+      setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout._id !== id));
     } catch (error) {
       console.error("Error deleting workout:", error);
       message.error("Failed to delete workout. Please try again later.");
@@ -69,13 +84,13 @@ const UserWorkouts = () => {
           padding: "24px",
           background: "#fff",
           boxShadow: "0 10px 15px rgba(0, 0, 0, 0.1)",
-          borderRadius: "8px",
+          borderRadius: "12px",
         }}
       >
-        <h2 style={{ textAlign: "center", fontSize: "24px", fontWeight: "bold" }}>
+        <h2 style={{ textAlign: "center", fontSize: "30px", fontWeight: "700", color: "#333" }}>
           My Workouts
         </h2>
-        <p style={{ textAlign: "center", color: "#6b7280" }}>
+        <p style={{ textAlign: "center", color: "#6b7280", fontSize: "16px" }}>
           Manage your planned workouts below:
         </p>
 
@@ -92,7 +107,7 @@ const UserWorkouts = () => {
             style={{
               display: "flex",
               flexWrap: "wrap",
-              gap: "16px",
+              gap: "24px",
               justifyContent: "center",
               marginTop: "24px",
             }}
@@ -101,26 +116,76 @@ const UserWorkouts = () => {
               <div
                 key={workout._id}
                 style={{
-                  width: "300px",
-                  padding: "16px",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "8px",
-                  background: "#f9fafb",
-                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  width: "320px",
+                  background: "#fff",
+                  borderRadius: "15px",
+                  overflow: "hidden",
+                  boxShadow: "0 6px 10px rgba(0, 0, 0, 0.1)",
                   position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                  transition: "transform 0.3s ease-in-out",
                 }}
               >
-                <h3 style={{ marginBottom: "8px", fontWeight: "bold" }}>
-                  {workout.name || "Untitled Workout"}
-                </h3>
-                <p style={{ color: "#6b7280" }}>
-                  {workout.description || "No description available."}
-                </p>
+                <div
+                  style={{
+                    padding: "16px",
+                    flex: "1",
+                    backgroundColor: "#f9fafb",
+                    borderBottom: "1px solid #e5e7eb",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      marginBottom: "12px",
+                      color: "#333",
+                    }}
+                  >
+                    {workout.name || "Untitled Workout"}
+                  </h3>
+                  <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "16px" }}>
+                    {workout.description || "No description available."}
+                  </p>
+                  {workout.categoryDetails.category && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <h4 style={{ marginBottom: "8px", color: "#555" }}>
+                        Category: {workout.categoryDetails.category}
+                      </h4>
+                      <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "12px" }}>
+                        {workout.categoryDetails.description}
+                      </p>
+                      <h5 style={{ color: "#444", fontSize: "16px", marginBottom: "8px" }}>
+                        Exercises:
+                      </h5>
+                      <ul>
+                        {workout.categoryDetails.exercise.map((exercise, index) => (
+                          <li key={index} style={{ marginBottom: "8px" }}>
+                            <strong>{exercise.name}</strong>
+                            <p style={{ color: "#6b7280", fontSize: "14px", margin: "0" }}>
+                              {exercise.description}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
                 <Button
                   type="primary"
                   danger
                   icon={<DeleteOutlined />}
-                  style={{ position: "absolute", top: "16px", right: "16px" }}
+                  style={{
+                    position: "absolute",
+                    top: "12px",
+                    right: "12px",
+                    borderRadius: "50%",
+                    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    padding: "10px",
+                    transition: "background-color 0.3s ease",
+                  }}
                   onClick={() => handleDelete(workout._id)}
                 >
                   Delete
@@ -130,20 +195,20 @@ const UserWorkouts = () => {
           </div>
         ) : (
           <div style={{ textAlign: "center", marginTop: "24px" }}>
-            <p>No workouts found.</p>
+            <p style={{ fontSize: "16px", color: "#6b7280" }}>No workouts found.</p>
           </div>
         )}
       </Content>
 
       <div
         style={{
-          marginTop: "24px",
+          marginTop: "40px",
           padding: "16px",
           backgroundColor: "#f0f2f5",
           textAlign: "center",
         }}
       >
-        <p>© 2024 My Fitness App. All rights reserved.</p>
+        <p style={{ color: "#6b7280" }}>© 2024 My Fitness App. All rights reserved.</p>
       </div>
     </Layout>
   );

@@ -34,7 +34,7 @@ function App() {
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
         <Route path="/trainerform" element={<GymTrainerForm/>} />
-        <Route path="/userworkout2" element={<UserWorkout2/>} />
+    
       </Routes>
     
       
