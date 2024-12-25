@@ -13,7 +13,8 @@ import PlanedWorkout from "../pages/PlanedWorkout";
 import UserWorkout from "../pages/Userworkout";
 import UsersPage from "../pages/Allusers"
 import Setexcercise from "../pages/Setexcercise"
-import GymTrainerForm from "../pages/Traineradd";
+
+import TrainerApplication from "../pages/Trainerapplication";
 
 function App() {
   return (
@@ -33,7 +34,8 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
-        <Route path="/trainerform" element={<GymTrainerForm/>} />
+       
+        <Route path="/trainerform" element={<TrainerApplication/>} />
     
       </Routes>
     
