@@ -157,7 +157,7 @@ app.post('/api/login', async (req, res) => {
   });
   app.use("/api/workout",workoutRoute );
   app.use("/api/categories", cateroute);
-  app.use("/api/trainers",trainerroute)
+  app.use("/api/trainers",trainerroute);
 //   app.use('/api/exercise',)
 
 

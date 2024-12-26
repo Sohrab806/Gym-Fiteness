@@ -39,7 +39,7 @@ const Home = () => {
     navigate("/"); // Redirect to the login page
   };
 
-  const initializeMenuItems = (usertype) => {
+  const initializeMenuItems = (usertype,trainer) => {
     const baseItems = [
       getItem("Home", "viewpage", <HomeOutlined />),
       getItem("Workouts", "workout", <PieChartOutlined />),
@@ -65,6 +65,18 @@ const Home = () => {
         ])
       );
     }
+    if(trainer =="yes"){
+
+  const trainerdash=getItem("Trainer Dashboard", "trainerDashboard", <TeamOutlined />,[
+       getItem("Mycourses", "mycourse",),
+       getItem("Addcourses", "addcourses",),
+       getItem("Application", "",),
+
+  ]);
+
+  baseItems.splice(2, 0, trainerdash);
+}
+
     return baseItems;
   };
 
@@ -92,7 +104,7 @@ const Home = () => {
             localStorage.setItem("email", email); // Store email in localStorage
             localStorage.setItem("usertype", usertype); // Store user type in localStorage
             localStorage.setItem("trainer", trainer); // Store user type in localStorage
-            setMenuItems(initializeMenuItems(usertype)); // Dynamically set menu items
+            setMenuItems(initializeMenuItems(usertype,trainer)); // Dynamically set menu items
             message.success("Token verified successfully!");
           }
         } catch (err) {
