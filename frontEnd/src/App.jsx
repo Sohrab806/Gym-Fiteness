@@ -14,6 +14,7 @@ import UserWorkout from "../pages/Userworkout";
 import UsersPage from "../pages/Allusers"
 import Setexcercise from "../pages/Setexcercise"
 import TrainerApplications from "../pages/Applications";
+import TrainerList from "../pages/Alltrainers";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
+        <Route path="/trainers" element={<TrainerList/>} />
        
        
         

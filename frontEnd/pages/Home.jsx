@@ -20,6 +20,7 @@ import UsersPage from "./Allusers";
 import ExerciseForm from "./Setexcercise";
 import TrainerApplication from "./Trainerapplication";
 import TrainerApplications from "./Applications";
+import TrainerListForm from "./Alltrainers";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -62,6 +63,7 @@ const Home = () => {
           getItem("Users", "users",<UserOutlined />),
           getItem("AddExercise", "addexercise",),
           getItem("Application", "apply",),
+          getItem("Trainers", "trainer",),
         ])
       );
     }
@@ -197,6 +199,7 @@ const Home = () => {
             {activeItem === "addexercise" && <ExerciseForm/>}
             {activeItem === "trainerform" && <TrainerApplication/>}
             {activeItem === "apply" && <TrainerApplications/>}
+            {activeItem === "trainer" && <TrainerListForm/>}
             
           </div>
         </Content>
@@ -235,6 +238,7 @@ const App = () => {
       <Route path="/setexcercise" element={<ExerciseForm/>} />
       <Route path="/trainerform" element={<TrainerApplication/>} />
       <Route path="/apply" element={<TrainerApplications/>} />
+      <Route path="/trainer" element={<TrainerListForm/>} />
     </Routes>
   );
 };

@@ -118,3 +118,36 @@ export const accept = async (req, res) => {
       res.status(500).json({ success: false, message: "Failed to reject application." });
     }
   }
+  export const gettrainers= async (req, res) => {
+    try {
+      const applications = await TrainerApplication.find({ role: "trainer" });
+      console.log("trainer :",applications)
+      res.json({ success: true, data: applications });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Failed to fetch trainers." });
+    }
+  }
+
+ export const update=async (req, res) => {
+    const { email } = req.body;
+    try {
+        const trainer = await auth.findOneAndUpdate(
+            { email },
+            { trainer: "no" }, // Update role to "fired"
+            { new: true }
+          );
+      const role = await TrainerApplication.findOneAndUpdate(
+        { email },
+        { role: "fired" }, // Update role to "fired"
+        { new: true }
+      );
+      if (trainer && role) {
+        res.status(200).json({ success: true, message: "Trainer fired successfully." });
+      } else {
+        res.status(404).json({ success: false, message: "Trainer not found." });
+      }
+    } catch (error) {
+      console.error("Error firing trainer:", error);
+      res.status(500).json({ success: false, message: "Error firing trainer." });
+    }
+  }
