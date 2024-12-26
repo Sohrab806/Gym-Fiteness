@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { Form, Input, InputNumber, Button, Select, message, Card } from "antd";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";  
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const TrainerCreateCourse = () => {
   const [loading, setLoading] = useState(false);
-
+  const navigate = useNavigate();  
   const handleFormSubmit = async (values) => {
     try {
       setLoading(true);
-      const trainerEmail = localStorage.getItem("trainerEmail"); // Retrieve trainer's email
+      const trainerEmail = localStorage.getItem("email"); // Retrieve trainer's email
       if (!trainerEmail) {
         message.error("Trainer email not found. Please log in again.");
         return;
@@ -24,6 +25,7 @@ const TrainerCreateCourse = () => {
 
       if (response.data.success) {
         message.success("Course created successfully. Awaiting approval.");
+        navigate("/home"); 
       } else {
         message.error("Failed to create the course.");
       }

@@ -21,6 +21,7 @@ import ExerciseForm from "./Setexcercise";
 import TrainerApplication from "./Trainerapplication";
 import TrainerApplications from "./Applications";
 import TrainerListForm from "./Alltrainers";
+import TrainerCreateCourse from "./Addcourse";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -71,7 +72,7 @@ const Home = () => {
 
   const trainerdash=getItem("Trainer Dashboard", "trainerDashboard", <TeamOutlined />,[
        getItem("Mycourses", "mycourse",),
-       getItem("Addcourses", "addcourses",),
+       getItem("Addcourses", "courses",),
        getItem("Application", "",),
 
   ]);
@@ -200,6 +201,7 @@ const Home = () => {
             {activeItem === "trainerform" && <TrainerApplication/>}
             {activeItem === "apply" && <TrainerApplications/>}
             {activeItem === "trainer" && <TrainerListForm/>}
+            {activeItem === "courses" && <TrainerCreateCourse/>}
             
           </div>
         </Content>
@@ -239,6 +241,7 @@ const App = () => {
       <Route path="/trainerform" element={<TrainerApplication/>} />
       <Route path="/apply" element={<TrainerApplications/>} />
       <Route path="/trainer" element={<TrainerListForm/>} />
+      <Route path="/courses" element={<TrainerCreateCourse/>} />
     </Routes>
   );
 };

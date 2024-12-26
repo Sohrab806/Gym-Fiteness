@@ -72,13 +72,13 @@ const TrainerApplication = () => {
             <Input />
           </Form.Item>
 
-          {/* <Form.Item
+          <Form.Item
             label="Email"
             name="email"
             rules={[{ required: true, type: "email", message: "Please enter a valid email!" }]}
           >
             <Input />
-          </Form.Item> */}
+          </Form.Item>
 
           <Form.Item
             label="Phone Number"

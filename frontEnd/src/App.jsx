@@ -7,14 +7,11 @@ import "./App.css";
 import Register from "../auth/Regsiter";
 import Login from "../auth/Login";
 import Home from "../pages/Home";
-import WorklogPage from "../pages/WorklogPage";
-import ViewPage from "../pages/ViewPage";
 import PlanedWorkout from "../pages/PlanedWorkout";
 import UserWorkout from "../pages/Userworkout";
 import UsersPage from "../pages/Allusers"
 import Setexcercise from "../pages/Setexcercise"
-import TrainerApplications from "../pages/Applications";
-import TrainerList from "../pages/Alltrainers";
+
 
 
 function App() {
@@ -35,7 +32,8 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
-        <Route path="/trainers" element={<TrainerList/>} />
+        
+        
        
        
         

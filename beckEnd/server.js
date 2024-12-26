@@ -19,6 +19,7 @@ import Category from "./models/category.js";
 import path from "path";
 import cateroute from "./route/category.route.js"
 import trainerroute from './route/trainer.route.js'
+import courseroute from "./route/course.route.js"
 
 
 app.use(express.json())
@@ -158,6 +159,7 @@ app.post('/api/login', async (req, res) => {
   app.use("/api/workout",workoutRoute );
   app.use("/api/categories", cateroute);
   app.use("/api/trainers",trainerroute);
+  app.use("/api/courses",courseroute);
 //   app.use('/api/exercise',)
 
 
