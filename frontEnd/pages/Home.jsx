@@ -22,6 +22,9 @@ import TrainerApplication from "./Trainerapplication";
 import TrainerApplications from "./Applications";
 import TrainerListForm from "./Alltrainers";
 import TrainerCreateCourse from "./Addcourse";
+import CourseApproval from "./Courseapproval";
+import ApprovedCourses from "./Allcourse";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -65,6 +68,8 @@ const Home = () => {
           getItem("AddExercise", "addexercise",),
           getItem("Application", "apply",),
           getItem("Trainers", "trainer",),
+          getItem("CourseApplications", "courseapp",),
+          getItem("Courses", "allcourse",),
         ])
       );
     }
@@ -202,6 +207,8 @@ const Home = () => {
             {activeItem === "apply" && <TrainerApplications/>}
             {activeItem === "trainer" && <TrainerListForm/>}
             {activeItem === "courses" && <TrainerCreateCourse/>}
+            {activeItem === "courseapp" && <CourseApproval/>}
+            {activeItem === "allcourse" && <ApprovedCourses/>}
             
           </div>
         </Content>
@@ -242,6 +249,7 @@ const App = () => {
       <Route path="/apply" element={<TrainerApplications/>} />
       <Route path="/trainer" element={<TrainerListForm/>} />
       <Route path="/courses" element={<TrainerCreateCourse/>} />
+   
     </Routes>
   );
 };
