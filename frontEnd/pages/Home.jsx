@@ -24,6 +24,7 @@ import TrainerListForm from "./Alltrainers";
 import TrainerCreateCourse from "./Addcourse";
 import CourseApproval from "./Courseapproval";
 import ApprovedCourses from "./Allcourse";
+import AllCourses from "./Courseforuser";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -51,7 +52,7 @@ const Home = () => {
       getItem("Users", "sub1", <UserOutlined />, [
         getItem("workout", "userworkout"),
         getItem("Apply", "trainerform"),
-        getItem("Alex", "users/alex"),
+        getItem("Addcourses", "usercourse"),
       ]),
       getItem("Settings", "sub2", <SettingOutlined />, [
         getItem("Profile", "settings/profile"),
@@ -209,6 +210,7 @@ const Home = () => {
             {activeItem === "courses" && <TrainerCreateCourse/>}
             {activeItem === "courseapp" && <CourseApproval/>}
             {activeItem === "allcourse" && <ApprovedCourses/>}
+            {activeItem === "usercourse" && <AllCourses/>}
             
           </div>
         </Content>
@@ -249,6 +251,9 @@ const App = () => {
       <Route path="/apply" element={<TrainerApplications/>} />
       <Route path="/trainer" element={<TrainerListForm/>} />
       <Route path="/courses" element={<TrainerCreateCourse/>} />
+      <Route path="/approve" element={<CourseApproval/>} />
+        <Route path="/allcourses" element={<ApprovedCourses/>} />
+        <Route path="/usercourses" element={<AllCourses/>} />
    
     </Routes>
   );

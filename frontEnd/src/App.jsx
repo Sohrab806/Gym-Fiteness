@@ -13,6 +13,7 @@ import UsersPage from "../pages/Allusers"
 import Setexcercise from "../pages/Setexcercise"
 import CourseApproval from "../pages/Courseapproval";
 import ApprovedCourses from "../pages/Allcourse";
+import AllCourses from "../pages/Courseforuser";
 
 
 
@@ -34,8 +35,7 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
-        <Route path="/approve" element={<CourseApproval/>} />
-        <Route path="/allcourses" element={<ApprovedCourses/>} />
+        
         
         
        
