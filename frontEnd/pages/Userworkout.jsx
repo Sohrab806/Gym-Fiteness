@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button, Spin, message } from "antd";
-import { DeleteOutlined,InfoCircleOutlined } from "@ant-design/icons";
+import { DeleteOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { List, Typography } from 'antd';
+import { List, Typography } from "antd";
 
 const { Content } = Layout;
 
@@ -22,19 +22,16 @@ const UserWorkouts = () => {
         const workoutResponse = await axios.get(`${BASE_URL}/api/workout/userworkout`, {
           params: { userEmail: email },
         });
-        console.log('Workout Response:', workoutResponse.data);
 
         const { success: workoutSuccess, data: workoutsData } = workoutResponse.data;
         if (!workoutSuccess) throw new Error("Failed to fetch workouts.");
 
         const workoutNames = workoutsData.map((workout) => workout.name);
-        console.log('Workout Names:', workoutNames);
 
         const categoryResponse = await axios.post(`${BASE_URL}/api/categories/match`, {
           userEmail: email,
           workouts: workoutNames,
         });
-        console.log('Category Response:', categoryResponse.data);
 
         const { success: categorySuccess, data: categoriesData } = categoryResponse.data;
         if (!categorySuccess) throw new Error("Failed to fetch categories.");
@@ -43,16 +40,12 @@ const UserWorkouts = () => {
           const matchedCategory = categoriesData.find(
             (category) => category.category.toLowerCase() === workout.name.toLowerCase()
           );
-          console.log('Matching workout:', workout.name, 'with category:', matchedCategory?.category);
-          const combined = {
+          return {
             ...workout,
             categoryDetails: matchedCategory || {},
           };
-          console.log('Combined workout data:', combined);
-          return combined;
         });
 
-        console.log('Final matched workouts:', matchedWorkouts);
         setWorkouts(matchedWorkouts);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -64,6 +57,25 @@ const UserWorkouts = () => {
 
     fetchWorkoutsAndCategories();
   }, []);
+
+  const handleAddExercise = async (exercise) => {
+    try {
+      const email = localStorage.getItem("email");
+      if (!email) throw new Error("User not authenticated. Please log in again.");
+
+      const data = {
+        email,
+        exercise,
+        date: new Date().toISOString(),
+      };
+
+      await axios.post(`${BASE_URL}/api/exercise/save`, data);
+      message.success("Exercise added successfully.");
+    } catch (error) {
+      console.error("Error adding exercise:", error);
+      message.error("Failed to add exercise. Please try again later.");
+    }
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -77,10 +89,9 @@ const UserWorkouts = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", padding: "24px", backgroundColor: "#f0f2f5" ,width: "100%",maxWidth: "100%"}}>
+    <Layout style={{ minHeight: "100vh", padding: "24px", backgroundColor: "#f0f2f5", width: "100%", maxWidth: "100%" }}>
       <Content
         style={{
-        
           maxWidth: "5000px",
           margin: "0 auto",
           padding: "24px",
@@ -137,7 +148,6 @@ const UserWorkouts = () => {
                     borderBottom: "1px solid #e5e7eb",
                   }}
                 >
-                 
                   {workout.categoryDetails.category && (
                     <div style={{ marginBottom: "20px" }}>
                       <h4 style={{ marginBottom: "8px", color: "#555" }}>
@@ -150,26 +160,48 @@ const UserWorkouts = () => {
                         Exercises:
                       </h5>
                       <List
-  header={<div>Exercises</div>}
-  footer={<div>End of Exercises</div>}
-  bordered
-  dataSource={workout.categoryDetails.exercise} // Assuming `exercise` is an array
-  renderItem={(exercise) => (
-    <List.Item>
-      <Typography.Text mark> <div style={{
-        
-          color:"white",
-          padding: "10px",
-          background: "#2E8B57",
-          boxShadow: "0 10px 15px rgba(0, 0, 0, 0.3)",
-          borderRadius: "12px",}}>{exercise.name} </div>  </Typography.Text>
-      <p style={{ color: "#6b7280", fontSize: "14px", margin: "12px 0 0px 30px",  }}>
-      <InfoCircleOutlined style={{ marginRight: '8px' }} />
-        { exercise.description}
-      </p>
-    </List.Item>
-  )}
-/>
+                        header={<div>Exercises</div>}
+                        footer={<div>End of Exercises</div>}
+                        bordered
+                        dataSource={workout.categoryDetails.exercise} // Assuming `exercise` is an array
+                        renderItem={(exercise) => (
+                          <List.Item
+                            actions={[
+                              <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={() => handleAddExercise(exercise)}
+                              >
+                                Add
+                              </Button>,
+                            ]}
+                          >
+                            <Typography.Text mark>
+                              <div
+                                style={{
+                                  color: "white",
+                                  padding: "10px",
+                                  background: "#2E8B57",
+                                  boxShadow: "0 10px 15px rgba(0, 0, 0, 0.3)",
+                                  borderRadius: "12px",
+                                }}
+                              >
+                                {exercise.name}
+                              </div>
+                            </Typography.Text>
+                            <p
+                              style={{
+                                color: "#6b7280",
+                                fontSize: "14px",
+                                margin: "12px 0 0px 30px",
+                              }}
+                            >
+                              <InfoCircleOutlined style={{ marginRight: "8px" }} />
+                              {exercise.description}
+                            </p>
+                          </List.Item>
+                        )}
+                      />
                     </div>
                   )}
                 </div>

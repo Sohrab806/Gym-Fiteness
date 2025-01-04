@@ -14,6 +14,7 @@ import Setexcercise from "../pages/Setexcercise"
 import CourseApproval from "../pages/Courseapproval";
 import ApprovedCourses from "../pages/Allcourse";
 import AllCourses from "../pages/Courseforuser";
+import ExerciseStatistics from "../pages/Exercisestate";
 
 
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/userworkout" element={<UserWorkout/>} />
         <Route path="/Allusers" element={<UsersPage/>} />
         <Route path="/setexcercise" element={<Setexcercise/>} />
+        <Route path="/state" element={<ExerciseStatistics/>} />
         
         
         
