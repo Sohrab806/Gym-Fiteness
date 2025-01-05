@@ -4,5 +4,5 @@ import { showstatistic, state } from "../controller/exercisestate.controller.js"
 const router=express();
 
 router.post('/save',state)
-router.get('/statistics',showstatistic)
+router.get('/',showstatistic)
 export default router

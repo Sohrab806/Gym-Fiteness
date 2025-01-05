@@ -61,36 +61,45 @@ export const state = async (req, res) => {
     }
   };
 
-  export const showstatistic=async (req, res) => {
-    try {
-      const { email } = req.query;  // Only email is required for this example
+
+
+
+
+  export const showstatistic= async (req, res) => {
+    const { email } = req.query;
+     console.log('email :',email)
+    if (!email) {
+      return res.status(400).json({ message: "Email parameter is required" });
+    }
   
-      if (!email) {
-        return res.status(400).json({ success: false, message: "Email is required." });
+    try {
+      // Find exercise state by email
+      const exerciseData = await Exercisestate.findOne({ email }).exec();
+  
+      // If no data is found, send an error
+      if (!exerciseData) {
+        return res.status(404).json({ message: "No exercise data found." });
       }
   
-      // Calculate the date for 7 days ago
+      // Filter and return the last 7 days of exercise data
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      sevenDaysAgo.setHours(0, 0, 0, 0);  // Set time to midnight for consistent comparison
   
-      // Query the user's exercise data for the last 7 days
-      const userEntry = await Exercisestate.findOne({ email });
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);  // Set time to the end of today (23:59:59.999)
   
-      if (!userEntry) {
-        return res.status(404).json({ success: false, message: "User not found." });
-      }
-  
-      // Filter dailyExercises within the last 7 days
-      const filteredExercises = userEntry.dailyExercises.filter((de) => {
-        const exerciseDate = new Date(de.date);
-        return exerciseDate >= sevenDaysAgo;
+      const recentExerciseData = exerciseData.dailyExercises.filter((entry) => {
+        const entryDate = new Date(entry.date);
+        return entryDate >= sevenDaysAgo && entryDate <= today; // Ensure the date is within the last 7 days
       });
   
-      res.json({ success: true, data: filteredExercises });
-    } catch (error) {
-      console.error("Error fetching user exercises:", error);
-      res.status(500).json({ success: false, message: "Internal server error." });
+      // Send back the filtered data as JSON
+      res.json({ data: recentExerciseData });
+    } catch (err) {
+      console.error("Error fetching exercise data:", err);
+      res.status(500).json({ message: "Server error", error: err });
     }
-  };
+  }
   
   

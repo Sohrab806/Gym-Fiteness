@@ -1,31 +1,40 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import { Layout, Card, Spin, Typography, Row, Col } from "antd";
 import { Chart as ChartJS } from "chart.js/auto";
-import { Layout, Card, Spin, Typography } from "antd";
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
-const ExerciseStatistics = ({ email }) => {
+const ExerciseStatistics = () => {
   const [exerciseData, setExerciseData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
       try {
-        const response = await axios.get(`/api/exercises/statistics`, { params: { email } });
-        const allData = response.data.data;
-
-        // Filter the data for the last 7 days
-        const filteredData = allData.filter((entry) => {
-          const exerciseDate = new Date(entry.date);
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-          return exerciseDate >= sevenDaysAgo;
+        const email = localStorage.getItem("email");
+        const response = await axios.get("http://localhost:5000/api/exercise", {
+          params: { email },
         });
 
-        setExerciseData(filteredData);
+        if (response.data && response.data.data) {
+          const allData = response.data.data;
+
+          // Filter the data for the last 7 days
+          const filteredData = allData.filter((entry) => {
+            const exerciseDate = new Date(entry.date);
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            return exerciseDate >= sevenDaysAgo;
+          });
+
+          setExerciseData(filteredData);
+        } else {
+          console.warn("No exercise data found in the response");
+          setExerciseData([]);
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching exercise data:", error);
@@ -34,7 +43,7 @@ const ExerciseStatistics = ({ email }) => {
     };
 
     fetchExerciseData();
-  }, [email]);
+  }, []);
 
   if (loading) {
     return (
@@ -44,38 +53,62 @@ const ExerciseStatistics = ({ email }) => {
     );
   }
 
-  // Prepare data for the chart
-  const dates = exerciseData.map((entry) => entry.date);
-  const exerciseCounts = exerciseData.map((entry) => entry.exercises.length);
+  if (exerciseData.length === 0) {
+    return (
+      <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+        <Content style={{ padding: "20px" }}>
+          <Row justify="center" align="middle">
+            <Col span={24} style={{ textAlign: "center" }}>
+              <Card
+                title={<Title level={3}>Your Dashboard</Title>}
+                style={{
+                  backgroundColor: "#ffffff",
+                  padding: "20px",
+                }}
+              >
+                <Text>No exercise data available for the last 7 days.</Text>
+              </Card>
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
+    );
+  }
+
+  // Count exercise frequency
+  const exerciseFrequency = {};
+  exerciseData.forEach((entry) => {
+    entry.exercises.forEach((exercise) => {
+      if (exerciseFrequency[exercise.name]) {
+        exerciseFrequency[exercise.name] += 1;
+      } else {
+        exerciseFrequency[exercise.name] = 1;
+      }
+    });
+  });
+
+  const exerciseNames = Object.keys(exerciseFrequency);
+  const exerciseCounts = exerciseNames.map((name) => exerciseFrequency[name]);
 
   const chartData = {
-    labels: dates,
+    labels: exerciseNames,
     datasets: [
       {
-        label: "Exercises per Day",
+        label: "Days Exercised",
         data: exerciseCounts,
+        backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        pointBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40", "#FF5733"],
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40", "#FF5733"],
-        borderWidth: 2,
-        tension: 0.4,
+        borderWidth: 1,
       },
     ],
   };
 
   const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
-        labels: {
-          color: "#333",
-          font: {
-            size: 14,
-          },
-        },
+        display: false,
       },
     },
     scales: {
@@ -85,6 +118,8 @@ const ExerciseStatistics = ({ email }) => {
         },
         ticks: {
           color: "#555",
+          maxRotation: 90,  // Rotate labels if there are too many
+          minRotation: 45,
         },
       },
       y: {
@@ -96,32 +131,49 @@ const ExerciseStatistics = ({ email }) => {
         },
       },
     },
-    maintainAspectRatio: true,
   };
 
   return (
     <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
       <Content style={{ padding: "20px" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Top Two-Thirds Section */}
-          <Card
-            title={<Title level={3}>Your Dashboard</Title>}
-            style={{ flex: 2, backgroundColor: "#ffffff" }}
-          >
-            <Text>Welcome to your dashboard. You can add other content here.</Text>
-            {/* Add more components or content as needed */}
-          </Card>
+        <Row justify="center" align="middle">
+          <Col span={24}>
+            <Card
+              title={<Title level={3}>Your Dashboard</Title>}
+              style={{
+                backgroundColor: "#ffffff",
+                padding: "20px",
+                marginBottom: "20px",
+              }}
+            >
+              <Text>
+                Welcome to your dashboard. You can add other content here.
+              </Text>
+            </Card>
+          </Col>
+        </Row>
 
-          {/* Bottom One-Third Section */}
-          <Card
-            title={<Title level={4}>Exercise Statistics (Last 7 Days)</Title>}
-            style={{ flex: 1, textAlign: "center", backgroundColor: "#ffffff" }}
-          >
-            <div style={{ transform: "scale(0.7)", transformOrigin: "top left", width: "100%", height: "100%" }}>
-              <Line data={chartData} options={chartOptions} />
-            </div>
-          </Card>
-        </div>
+        <Row justify="center" align="middle">
+          <Col span={24}>
+            <Card
+              title={<Title level={4}>Exercise Frequency (Last 7 Days)</Title>}
+              style={{
+                backgroundColor: "#ffffff",
+                padding: "20px",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "400px",
+                  overflowX: "auto",  // Enable horizontal scrolling
+                }}
+              >
+                <Bar data={chartData} options={chartOptions} />
+              </div>
+            </Card>
+          </Col>
+        </Row>
       </Content>
     </Layout>
   );
