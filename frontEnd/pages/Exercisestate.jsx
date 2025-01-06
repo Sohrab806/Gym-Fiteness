@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
-import { Layout, Card, Spin, Typography, Row, Col } from "antd";
+import { Layout, Card, Spin, Typography, Row, Col, Form, Input, Button } from "antd";
 import { Chart as ChartJS } from "chart.js/auto";
-
-
-
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -13,6 +10,8 @@ const { Title, Text } = Typography;
 const ExerciseStatistics = () => {
   const [exerciseData, setExerciseData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [idealWeightRange, setIdealWeightRange] = useState(null);
+  const [weightDifference, setWeightDifference] = useState(null);
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -48,6 +47,35 @@ const ExerciseStatistics = () => {
     fetchExerciseData();
   }, []);
 
+  useEffect(() => {
+    if (idealWeightRange || weightDifference) {
+      const timer = setTimeout(() => {
+        setIdealWeightRange(null);
+        setWeightDifference(null);
+      }, 30000); // 30 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [idealWeightRange, weightDifference]);
+
+  const calculateIdealWeight = (values) => {
+    const heightInMeters = values.height / 100; // Convert cm to meters
+    const minWeight = (18.5 * Math.pow(heightInMeters, 2)).toFixed(1);
+    const maxWeight = (24.9 * Math.pow(heightInMeters, 2)).toFixed(1);
+    setIdealWeightRange({ min: minWeight, max: maxWeight });
+
+    const currentWeight = parseFloat(values.currentWeight);
+    let difference = null;
+    if (currentWeight < minWeight) {
+      difference = `You need to gain ${(minWeight - currentWeight).toFixed(1)} kg to reach the minimum healthy weight.`;
+    } else if (currentWeight > maxWeight) {
+      difference = `You need to lose ${(currentWeight - maxWeight).toFixed(1)} kg to reach the maximum healthy weight.`;
+    } else {
+      difference = "Your weight is within the healthy range!";
+    }
+    setWeightDifference(difference);
+  };
+
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -65,13 +93,10 @@ const ExerciseStatistics = () => {
               <Card
                 title={<Title level={3}>Your Dashboard</Title>}
                 style={{
-                  
-                   // Replace with your image URL
-
                   backgroundColor: "#ffffff",
                   padding: "20px",
                 }}
-              > 
+              >
                 <Text>No exercise data available for the last 7 days.</Text>
               </Card>
             </Col>
@@ -81,7 +106,6 @@ const ExerciseStatistics = () => {
     );
   }
 
-  // Count exercise frequency
   const exerciseFrequency = {};
   exerciseData.forEach((entry) => {
     entry.exercises.forEach((exercise) => {
@@ -124,7 +148,7 @@ const ExerciseStatistics = () => {
         },
         ticks: {
           color: "#2E8B57",
-          maxRotation: 90,  // Rotate labels if there are too many
+          maxRotation: 90,
           minRotation: 45,
         },
       },
@@ -145,38 +169,61 @@ const ExerciseStatistics = () => {
         <Row justify="center" align="middle">
           <Col span={24}>
             <Card
-             
-              
               style={{
                 height: "60vh",
-                backgroundImage: "url('/src/assets/more.jpg')", // Replace with your image URL
-                  backgroundSize: "cover", // Ensures the image covers the entire card
-                  backgroundRepeat: "no-repeat", // Prevents the image from repeating
-                  backgroundPosition: "center",
+                backgroundImage: "url('/src/assets/more.jpg')",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
                 backgroundColor: "#ffffff",
                 padding: "20px",
                 marginBottom: "20px",
               }}
             >
-              <Text>
-                Welcome to your dashboard. You can add other content here.
-              </Text>
+              <Text>Welcome to your dashboard. You can add other content here.</Text>
             </Card>
             <div>
-              <Card
-               title={<Title level={3}>Calrie count</Title>}
-              >
-              <h1 style={{
-                textAlign:'center',
-              }}>Calrie count</h1>
+              <Card title={<Title level={3}>Weight Tracker</Title>}>
+                <Form layout="vertical" onFinish={calculateIdealWeight}>
+                  <Form.Item
+                    label="Height (in cm)"
+                    name="height"
+                    rules={[{ required: true, message: "Please enter your height!" }]}
+                  >
+                    <Input type="number" placeholder="e.g., 170" />
+                  </Form.Item>
+                  <Form.Item
+                    label="Current Weight (in kg)"
+                    name="currentWeight"
+                    rules={[{ required: true, message: "Please enter your current weight!" }]}
+                  >
+                    <Input type="number" placeholder="e.g., 70" />
+                  </Form.Item>
+                  <Button type="primary" htmlType="submit">
+                    Calculate
+                  </Button>
+                </Form>
+
+                {idealWeightRange && (
+                  <div style={{ marginTop: "20px" }}>
+                    <Text>
+                      Your ideal weight range is between{" "}
+                      <b>
+                        {idealWeightRange.min} kg - {idealWeightRange.max} kg
+                      </b>
+                      .
+                    </Text>
+                    <br />
+                    <Text>{weightDifference}</Text>
+                  </div>
+                )}
               </Card>
-             
             </div>
           </Col>
         </Row>
 
         <Row justify="center" align="middle">
-           <Col span={24}>
+          <Col span={24}>
             <Card
               title={<Title level={4}>Exercise Frequency (Last 7 Days)</Title>}
               style={{
@@ -184,13 +231,7 @@ const ExerciseStatistics = () => {
                 padding: "20px",
               }}
             >
-              <div
-                style={{
-                  width: "100%",
-                  height: "400px",
-                  overflowX: "auto",  // Enable horizontal scrolling
-                }}
-              >
+              <div style={{ width: "100%", height: "400px", overflowX: "auto" }}>
                 <Bar data={chartData} options={chartOptions} />
               </div>
             </Card>

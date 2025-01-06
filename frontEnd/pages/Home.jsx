@@ -143,6 +143,7 @@ const Home = () => {
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
         style={{
+          
           background: "#2E8B57",
         }}
       >
