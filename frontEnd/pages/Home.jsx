@@ -25,6 +25,7 @@ import TrainerCreateCourse from "./Addcourse";
 import CourseApproval from "./Courseapproval";
 import ApprovedCourses from "./Allcourse";
 import AllCourses from "./Courseforuser";
+import ExerciseStatistics from "./Exercisestate";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -32,7 +33,7 @@ const { Header, Content, Footer, Sider } = Layout;
 const Home = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState("viewpage");
+  const [activeItem, setActiveItem] = useState("state");
   const [menuItems, setMenuItems] = useState([]); // Dynamic menu items
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -47,7 +48,7 @@ const Home = () => {
 
   const initializeMenuItems = (usertype,trainer) => {
     const baseItems = [
-      getItem("Home", "viewpage", <HomeOutlined />),
+      getItem("Home", "state", <HomeOutlined />),
       getItem("Workouts", "workout", <PieChartOutlined />),
       getItem("Users", "sub1", <UserOutlined />, [
         getItem("workout", "userworkout"),
@@ -199,7 +200,7 @@ const Home = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {activeItem === "viewpage" && <ViewPage />}
+            {activeItem === "state" && <ExerciseStatistics   />}
             {activeItem === "workout" && <PlanedWorkout />}
             {activeItem === "userworkout" && <UserWorkout />}
             {activeItem === "users" && <UsersPage/>}

@@ -4,6 +4,9 @@ import { Bar } from "react-chartjs-2";
 import { Layout, Card, Spin, Typography, Row, Col } from "antd";
 import { Chart as ChartJS } from "chart.js/auto";
 
+
+
+
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -62,10 +65,13 @@ const ExerciseStatistics = () => {
               <Card
                 title={<Title level={3}>Your Dashboard</Title>}
                 style={{
+                  
+                   // Replace with your image URL
+
                   backgroundColor: "#ffffff",
                   padding: "20px",
                 }}
-              >
+              > 
                 <Text>No exercise data available for the last 7 days.</Text>
               </Card>
             </Col>
@@ -96,8 +102,8 @@ const ExerciseStatistics = () => {
       {
         label: "Days Exercised",
         data: exerciseCounts,
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
-        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "#2E8B57",
+        borderColor: "#2E8B57",
         borderWidth: 1,
       },
     ],
@@ -117,7 +123,7 @@ const ExerciseStatistics = () => {
           color: "rgba(200, 200, 200, 0.2)",
         },
         ticks: {
-          color: "#555",
+          color: "#2E8B57",
           maxRotation: 90,  // Rotate labels if there are too many
           minRotation: 45,
         },
@@ -127,20 +133,26 @@ const ExerciseStatistics = () => {
           color: "rgba(200, 200, 200, 0.2)",
         },
         ticks: {
-          color: "#555",
+          color: "#2E8B57",
         },
       },
     },
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+    <Layout style={{ minHeight: "100vh", backgroundColor: "white" }}>
       <Content style={{ padding: "20px" }}>
         <Row justify="center" align="middle">
           <Col span={24}>
             <Card
-              title={<Title level={3}>Your Dashboard</Title>}
+             
+              
               style={{
+                height: "60vh",
+                backgroundImage: "url('/src/assets/more.jpg')", // Replace with your image URL
+                  backgroundSize: "cover", // Ensures the image covers the entire card
+                  backgroundRepeat: "no-repeat", // Prevents the image from repeating
+                  backgroundPosition: "center",
                 backgroundColor: "#ffffff",
                 padding: "20px",
                 marginBottom: "20px",
@@ -150,15 +162,25 @@ const ExerciseStatistics = () => {
                 Welcome to your dashboard. You can add other content here.
               </Text>
             </Card>
+            <div>
+              <Card
+               title={<Title level={3}>Calrie count</Title>}
+              >
+              <h1 style={{
+                textAlign:'center',
+              }}>Calrie count</h1>
+              </Card>
+             
+            </div>
           </Col>
         </Row>
 
         <Row justify="center" align="middle">
-          <Col span={24}>
+           <Col span={24}>
             <Card
               title={<Title level={4}>Exercise Frequency (Last 7 Days)</Title>}
               style={{
-                backgroundColor: "#ffffff",
+                backgroundColor: "white",
                 padding: "20px",
               }}
             >
